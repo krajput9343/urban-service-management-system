@@ -1,0 +1,315 @@
+/* ================================================= */
+/*                 MY BOOKING SECTION                 */
+/* ================================================= */
+
+.mybooking-section {
+    width: 100%;
+    min-height: 70vh;
+
+    padding: 90px 0;
+
+    background: #f8fafc;
+}
+
+.mybooking-container {
+    width: 90%;
+    max-width: 1000px;
+
+    margin: auto;
+}
+
+
+/* ================================================= */
+/*                    HEADING                        */
+/* ================================================= */
+
+.mybooking-heading {
+    text-align: center;
+
+    margin-bottom: 45px;
+}
+
+.mybooking-heading span {
+    color: #2563eb;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+.mybooking-heading h2 {
+    margin: 12px 0;
+
+    color: #0f172a;
+
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.mybooking-heading h2 strong {
+    color: #2563eb;
+}
+
+.mybooking-heading p {
+    color: #64748b;
+
+    font-size: 15px;
+}
+
+
+/* ================================================= */
+/*                  BOOKING LIST                     */
+/* ================================================= */
+
+.mybooking-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+
+/* ================================================= */
+/*                  BOOKING CARD                     */
+/* ================================================= */
+
+.mybooking-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 25px rgba(15, 23, 42, 0.06);
+
+    transition: 0.3s;
+}
+
+.mybooking-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 15px 35px rgba(37, 99, 235, 0.10);
+}
+
+
+/* ================================================= */
+/*                    ICON                           */
+/* ================================================= */
+
+.mybooking-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+
+    border-radius: 14px;
+
+    font-size: 25px;
+
+    flex-shrink: 0;
+}
+
+
+/* ================================================= */
+/*                    INFO                           */
+/* ================================================= */
+
+.mybooking-info {
+    flex: 1;
+}
+
+.mybooking-info h3 {
+    margin: 0 0 8px;
+
+    color: #0f172a;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.mybooking-info p {
+    display: inline-block;
+
+    margin: 0 20px 0 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+/* ================================================= */
+/*                   STATUS                          */
+/* ================================================= */
+
+.mybooking-status {
+    padding: 8px 15px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.mybooking-status.pending {
+    background: #fff7ed;
+
+    color: #ea580c;
+}
+
+.mybooking-status.confirmed {
+    background: #ecfdf5;
+
+    color: #059669;
+}
+
+
+/* ================================================= */
+/*                    MOBILE                         */
+/* ================================================= */
+
+@media (max-width: 600px) {
+
+    .mybooking-section {
+        padding: 70px 0;
+    }
+
+    .mybooking-heading h2 {
+        font-size: 32px;
+    }
+
+    .mybooking-card {
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+    }
+
+    .mybooking-info {
+        min-width: calc(100% - 80px);
+    }
+
+    .mybooking-status {
+        margin-left: 78px;
+    }
+
+    .mybooking-info p {
+        display: block;
+
+        margin: 5px 0;
+    }
+}
+
+
+/* ================================================= */
+/*                 SMALL MOBILE                      */
+/* ================================================= */
+
+@media (max-width: 400px) {
+
+    .mybooking-container {
+        width: 92%;
+    }
+
+    .mybooking-heading h2 {
+        font-size: 28px;
+    }
+
+    .mybooking-card {
+        padding: 18px;
+    }
+
+    .mybooking-status {
+        margin-left: 0;
+    }
+}
+
+.no-booking {
+    text-align: center;
+    padding: 50px 20px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+}
+
+.no-booking-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    border-radius: 16px;
+    font-size: 28px;
+}
+
+.no-booking h3 {
+    margin: 0 0 8px;
+    color: #0f172a;
+    font-size: 20px;
+}
+
+.no-booking p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.cancel-booking-btn {
+    margin-top: 12px;
+    padding: 8px 14px;
+    border: 1px solid #ef4444;
+    border-radius: 8px;
+    background: #fff;
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.cancel-booking-btn:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+.mybooking-status.pending {
+    background:#fff7ed;
+    color:#ea580c;
+}
+
+.mybooking-status.confirmed {
+    background:#ecfdf5;
+    color:#059669;
+}
+
+.mybooking-status.completed {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.mybooking-status.cancelled {
+    background: #fef2f2;
+    color: #dc2626;
+}

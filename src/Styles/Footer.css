@@ -1,0 +1,439 @@
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer {
+    width: 100%;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 70px 7% 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* =========================================
+   BACKGROUND EFFECT
+========================================= */
+
+.footer::before {
+    content: "";
+
+    position: absolute;
+
+    width: 450px;
+    height: 450px;
+
+    border-radius: 50%;
+
+    background: rgba(37, 99, 235, 0.12);
+
+    top: -250px;
+    right: -180px;
+
+    filter: blur(20px);
+
+    pointer-events: none;
+}
+
+
+/* =========================================
+   TOP CTA
+========================================= */
+
+.footer-cta {
+    max-width: 1200px;
+
+    margin: 0 auto 65px;
+
+    padding: 32px 35px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(37, 99, 235, 0.18),
+        rgba(59, 130, 246, 0.06)
+    );
+
+    border: 1px solid rgba(148, 163, 184, 0.18);
+
+    border-radius: 24px;
+
+    position: relative;
+
+    z-index: 2;
+
+    backdrop-filter: blur(10px);
+}
+
+
+/* =========================================
+   BRAND
+========================================= */
+
+.footer-brand h2 {
+    margin: 0 0 8px;
+
+    font-size: 28px;
+
+    font-weight: 750;
+
+    letter-spacing: -0.5px;
+}
+
+
+.footer-brand h2 span {
+    color: #60a5fa;
+}
+
+
+.footer-brand p {
+    margin: 0;
+
+    max-width: 350px;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+
+    line-height: 24px;
+}
+
+
+/* =========================================
+   CTA CONTENT
+========================================= */
+
+.footer-cta-content {
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+}
+
+
+.footer-cta-content h3 {
+    margin: 0 0 5px;
+
+    font-size: 17px;
+
+    font-weight: 600;
+}
+
+
+.footer-cta-content p {
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   BOOK BUTTON
+========================================= */
+
+.footer-book-btn {
+    border: none;
+
+    padding: 14px 22px;
+
+    border-radius: 12px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+
+    box-shadow:
+        0 10px 25px rgba(37, 99, 235, 0.25);
+}
+
+
+.footer-book-btn:hover {
+    background: #3b82f6;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 15px 30px rgba(37, 99, 235, 0.35);
+}
+
+
+/* =========================================
+   FOOTER CONTENT
+========================================= */
+
+.footer-content {
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr 1fr 1.4fr;
+
+    gap: 50px;
+
+    padding-bottom: 55px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================================
+   COLUMNS
+========================================= */
+
+.footer-column {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+.footer-column h3 {
+    margin: 0 0 10px;
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 650;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+}
+
+
+/* =========================================
+   LINKS
+========================================= */
+
+.footer-column a {
+    width: fit-content;
+
+    color: #94a3b8;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    transition: 0.25s ease;
+}
+
+
+.footer-column a:hover {
+    color: #60a5fa;
+
+    transform: translateX(4px);
+}
+
+
+/* =========================================
+   CONTACT
+========================================= */
+
+.footer-contact p {
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+
+    line-height: 23px;
+}
+
+
+/* =========================================
+   BOTTOM
+========================================= */
+
+.footer-bottom {
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding-top: 25px;
+
+    border-top: 1px solid rgba(148, 163, 184, 0.15);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.footer-bottom p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   SOCIAL
+========================================= */
+
+.footer-social {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.footer-social a {
+    width: 36px;
+
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition: 0.3s ease;
+}
+
+
+.footer-social a:hover {
+    background: #2563eb;
+
+    color: #ffffff;
+
+    border-color: #2563eb;
+
+    transform: translateY(-4px);
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 992px) {
+
+    .footer {
+        padding: 60px 5% 25px;
+    }
+
+
+    .footer-cta {
+        padding: 28px;
+    }
+
+
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 40px;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 650px) {
+
+    .footer {
+        padding: 50px 20px 20px;
+    }
+
+
+    .footer-cta {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        padding: 25px;
+
+        margin-bottom: 45px;
+    }
+
+
+    .footer-cta-content {
+        width: 100%;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+    }
+
+
+    .footer-book-btn {
+        width: 100%;
+    }
+
+
+    .footer-content {
+        grid-template-columns: 1fr;
+
+        gap: 30px;
+
+        padding-bottom: 40px;
+    }
+
+
+    .footer-bottom {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        padding-top: 20px;
+    }
+
+}

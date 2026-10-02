@@ -1,0 +1,532 @@
+/* ==========================================
+              HERO SECTION
+========================================== */
+
+.hero{
+
+    width:100%;
+    min-height:calc(100vh - 80px);
+
+    display:flex;
+    align-items:center;
+
+    justify-content:flex-start;
+
+    gap:0px;
+
+    padding:25px 4%;
+    padding-left:7%;
+    background:
+    linear-gradient(
+        135deg,
+        #f8fafc,
+        #eef6ff
+    );
+
+    overflow:hidden;
+
+}
+
+
+/* ==========================================
+              LEFT CONTENT
+========================================== */
+
+
+.hero-left{
+
+    width:55%;
+    z-index:2;
+    margin-right:0;
+
+}
+
+
+.hero-badge{
+
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+
+    padding:10px 20px;
+
+    background:white;
+
+    border-radius:50px;
+
+    color:#2563eb;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    margin-bottom:25px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.06);
+
+}
+
+
+
+.hero-left h1{
+
+    font-size:58px;
+
+    line-height:1.1;
+
+    font-weight:800;
+
+    letter-spacing:-1.5px;
+
+    color:#0f172a;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.hero-left h1 span{
+
+    color:#2563eb;
+
+}
+
+
+
+.hero-left p{
+
+    width:90%;
+
+    font-size:22px;
+
+    line-height:32px;
+
+    color:#64748b;
+
+    margin-bottom:35px;
+
+}
+
+
+
+
+/* ==========================================
+              SEARCH BOX
+========================================== */
+
+
+.search-box{
+
+    width:520px;
+
+    height:55px;
+
+    background:white;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    box-shadow:
+
+    0 15px 40px rgba(15,23,42,.12);
+
+    margin-bottom:35px;
+
+}
+
+
+.search-box input{
+
+    flex:1;
+
+    height:100%;
+
+    border:none;
+
+    outline:none;
+
+    padding:0 25px;
+
+    font-size:16px;
+
+}
+
+
+
+.search-btn{
+
+    height:100%;
+
+    width:140px;
+
+    border:none;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+.search-btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+
+
+/* ==========================================
+              STATS
+========================================== */
+
+
+.hero-stats{
+
+    display:flex;
+
+    gap:25px;
+
+    margin-bottom:35px;
+
+}
+
+
+
+.stat-card{
+
+
+    width:145px;
+
+    height:95px;
+
+    background:white;
+
+    border-radius:18px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    box-shadow:
+
+    0 10px 30px rgba(0,0,0,.07);
+
+
+    transition:.3s;
+
+}
+
+
+
+.stat-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+.stat-card h3{
+
+    font-size:32px;
+
+    color:#2563eb;
+
+    margin-top:25px;
+
+}
+
+.star-icon{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+.stat-card p{
+
+    font-size:14px;
+
+    color:#1c1c1d;
+
+    margin-left: 50px;
+
+}
+
+
+
+/* ==========================================
+              BUTTONS
+========================================== */
+
+
+.hero-buttons{
+
+    display:flex;
+
+    gap:50px;
+
+}
+
+
+
+.hero-btn{
+
+
+    width:210px;
+
+    height:58px;
+
+    border-radius:14px;
+
+    border:none;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+
+    transition:.3s;
+
+
+    box-shadow:
+
+    0 15px 30px rgba(37,99,235,.25);
+
+}
+
+
+
+.hero-btn:hover{
+
+    transform:translateY(-5px);
+
+    background:#1d4ed8;
+
+}
+
+
+
+/* ==========================================
+              RIGHT IMAGE
+========================================== */
+
+
+.hero-right{
+
+    width:45%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+.hero-right img{
+
+    width:115%;
+
+    max-width:650px;
+
+    height:600px;
+
+    object-fit:contain;
+
+    /* animation remove */
+    transform:none;
+    transform:translateX(-30px);
+}
+
+
+
+/* image animation */
+
+@keyframes float{
+
+
+    0%{
+
+        transform:translateY(0px);
+
+    }
+
+
+    50%{
+
+        transform:translateY(-15px);
+
+    }
+
+
+    100%{
+
+        transform:translateY(0px);
+
+    }
+
+
+}
+
+
+
+
+/* ==========================================
+              RESPONSIVE
+========================================== */
+
+
+@media(max-width:1000px){
+
+
+.hero{
+
+    flex-direction:column;
+
+    text-align:center;
+
+    padding:50px 5%;
+
+}
+
+
+.hero-left,
+.hero-right{
+
+    width:100%;
+
+}
+
+
+.hero-left p{
+
+    width:100%;
+
+}
+
+
+
+.search-box{
+
+    margin:auto;
+
+    margin-bottom:35px;
+
+}
+
+
+.hero-stats{
+
+    justify-content:center;
+
+}
+
+
+.hero-buttons{
+
+    justify-content:center;
+
+}
+
+
+
+.hero-right img{
+
+    /* margin-top:-40px;
+
+    max-width:420px;
+
+    height:auto;
+transform:translateY(-60px); */
+
+   width:115%;
+    max-width:650px;
+    height:600px;
+    object-fit:contain;
+
+    transform:translateY(-40px);
+
+}
+
+
+}
+
+
+
+@media(max-width:600px){
+
+
+.hero-left h1{
+
+    font-size:40px;
+
+}
+
+
+
+.search-box{
+
+    width:100%;
+
+}
+
+
+
+.hero-stats{
+
+    flex-wrap:wrap;
+
+}
+
+
+.stat-card{
+
+    width:140px;
+
+}
+
+
+.hero-buttons{
+
+    flex-direction:column;
+
+}
+
+
+
+.hero-btn{
+
+    width:100%;
+
+}
+
+
+}
