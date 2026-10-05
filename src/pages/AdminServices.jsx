@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/AdminServices.css";
 
 export default function AdminServices() {
@@ -42,12 +42,28 @@ export default function AdminServices() {
   // SERVICES
   // =========================
 
-  const [services, setServices] = useState(() => {
-    return (
-      JSON.parse(localStorage.getItem("services")) ||
-      defaultServices
-    );
-  });
+  const [services, setServices] = useState(defaultServices);
+
+  // =========================
+  // GET SERVICES FROM BACKEND
+  // =========================
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/services")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch services");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setServices(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching services:", error);
+      });
+  }, []);
 
   const [showForm, setShowForm] = useState(false);
 
@@ -71,12 +87,10 @@ export default function AdminServices() {
   // =========================
 
   const handleChange = (e) => {
-
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
-
   };
 
   // =========================
@@ -121,7 +135,7 @@ export default function AdminServices() {
   // ADD / EDIT SERVICE
   // =========================
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
 
     e.preventDefault();
 
@@ -132,113 +146,134 @@ export default function AdminServices() {
       !formData.duration ||
       !formData.rating
     ) {
-
       alert("Please fill all fields!");
-
       return;
     }
 
-    // =========================
-    // EDIT SERVICE
-    // =========================
-
-    if (editId !== null) {
-
-      const updatedServices = services.map((service) =>
-        service.id === editId
-          ? {
-              ...service,
-
-              title: formData.title,
-
-              category: formData.category,
-
-              price: Number(formData.price),
-
-              duration: formData.duration,
-
-              rating: Number(formData.rating),
-
-              // Keep old image if new image is not selected
-              image:
-                formData.image || service.image || ""
-            }
-          : service
-      );
-
-      setServices(updatedServices);
-
-      localStorage.setItem(
-        "services",
-        JSON.stringify(updatedServices)
-      );
-
-      alert("Service updated successfully!");
-
+    // Image required only while adding
+    if (editId === null && !formData.image) {
+      alert("Please select a service image!");
+      return;
     }
 
-    // =========================
-    // ADD SERVICE
-    // =========================
+    try {
 
-    else {
+      // =========================
+      // EDIT SERVICE
+      // =========================
 
-      if (!formData.image) {
+      if (editId !== null) {
 
-        alert("Please select a service image!");
+        const existingService = services.find(
+          (service) => service.id === editId
+        );
 
-        return;
+        const serviceData = {
+          title: formData.title,
+          category: formData.category,
+          price: Number(formData.price),
+          duration: formData.duration,
+          rating: Number(formData.rating),
+
+          // Keep old image if new image is not selected
+          image:
+            formData.image ||
+            existingService?.image ||
+            ""
+        };
+
+        const response = await fetch(
+          `http://localhost:8080/api/services/${editId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(serviceData)
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to update service");
+        }
+
+        const updatedService = await response.json();
+
+        setServices((prevServices) =>
+          prevServices.map((service) =>
+            service.id === editId
+              ? updatedService
+              : service
+          )
+        );
+
+        alert("Service updated successfully!");
       }
 
-      const newService = {
+      // =========================
+      // ADD SERVICE
+      // =========================
 
-        id: Date.now(),
+      else {
 
-        title: formData.title,
+        const newServiceData = {
+          title: formData.title,
+          category: formData.category,
+          price: Number(formData.price),
+          duration: formData.duration,
+          rating: Number(formData.rating),
+          image: formData.image
+        };
 
-        category: formData.category,
+        const response = await fetch(
+          "http://localhost:8080/api/services",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newServiceData)
+          }
+        );
 
-        price: Number(formData.price),
+        if (!response.ok) {
+          throw new Error("Failed to add service");
+        }
 
-        duration: formData.duration,
+        const newService = await response.json();
 
-        rating: Number(formData.rating),
+        setServices((prevServices) => [
+          ...prevServices,
+          newService
+        ]);
 
-        image: formData.image
-      };
+        alert("Service added successfully!");
+      }
 
-      const updatedServices = [
-        ...services,
-        newService
-      ];
+      // =========================
+      // RESET FORM
+      // =========================
 
-      setServices(updatedServices);
+      setFormData({
+        title: "",
+        category: "",
+        price: "",
+        duration: "",
+        rating: "",
+        image: ""
+      });
 
-      localStorage.setItem(
-        "services",
-        JSON.stringify(updatedServices)
-      );
+      setEditId(null);
 
-      alert("Service added successfully!");
+      setShowForm(false);
+
+    } catch (error) {
+
+      console.error("Error:", error);
+
+      alert("Something went wrong!");
 
     }
-
-    // =========================
-    // RESET FORM
-    // =========================
-
-    setFormData({
-      title: "",
-      category: "",
-      price: "",
-      duration: "",
-      rating: "",
-      image: ""
-    });
-
-    setEditId(null);
-
-    setShowForm(false);
   };
 
   // =========================
@@ -276,7 +311,7 @@ export default function AdminServices() {
   // DELETE SERVICE
   // =========================
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
 
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this service?"
@@ -286,18 +321,34 @@ export default function AdminServices() {
       return;
     }
 
-    const updatedServices = services.filter(
-      (service) => service.id !== id
-    );
+    try {
 
-    setServices(updatedServices);
+      const response = await fetch(
+        `http://localhost:8080/api/services/${id}`,
+        {
+          method: "DELETE"
+        }
+      );
 
-    localStorage.setItem(
-      "services",
-      JSON.stringify(updatedServices)
-    );
+      if (!response.ok) {
+        throw new Error("Failed to delete service");
+      }
 
-    alert("Service deleted successfully!");
+      setServices((prevServices) =>
+        prevServices.filter(
+          (service) => service.id !== id
+        )
+      );
+
+      alert("Service deleted successfully!");
+
+    } catch (error) {
+
+      console.error("Error deleting service:", error);
+
+      alert("Something went wrong!");
+
+    }
   };
 
   // =========================

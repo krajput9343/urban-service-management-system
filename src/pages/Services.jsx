@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Styles/Services.css";
 import { Link } from "react-router-dom";
 
@@ -88,32 +88,62 @@ export default function Services() {
 
 
     /* =========================
-       GET ADMIN SERVICES
+       SERVICES STATE
     ========================= */
 
-    const savedServices = JSON.parse(
-        localStorage.getItem("services")
-    );
-
-
-    const services = savedServices
-        ? savedServices.map((service) => ({
-
-            ...service,
-
-            // Admin uploaded image will be used first
-            image: service.image || getServiceImage(service.title),
-
-            rating: String(service.rating),
-
-            price: `₹${service.price}`
-
-        }))
-        : defaultServices;
-
+    const [services, setServices] = useState(defaultServices);
 
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
+
+
+    /* =========================
+       GET SERVICES FROM BACKEND
+    ========================= */
+
+    useEffect(() => {
+
+        fetch("http://localhost:8080/api/services")
+            .then((response) => {
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch services");
+                }
+
+                return response.json();
+
+            })
+            .then((data) => {
+
+                const formattedServices = data.map((service) => ({
+
+                    ...service,
+
+                    image:
+                        service.image &&
+                        !service.image.startsWith("data:")
+                            ? getServiceImage(service.title)
+                            : service.image,
+
+                    rating: String(service.rating),
+
+                    price:
+                        String(service.price).startsWith("₹")
+                            ? String(service.price)
+                            : `₹${service.price}`
+
+                }));
+
+                setServices(formattedServices);
+
+            })
+            .catch((error) => {
+
+                console.error("Error fetching services:", error);
+
+            });
+
+    }, []);
 
 
     /* =========================
