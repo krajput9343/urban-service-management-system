@@ -43,13 +43,9 @@ export default function Booking() {
 
   };
 
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
 
     e.preventDefault();
-
-    const existingBookings =
-      JSON.parse(localStorage.getItem("bookings")) || [];
 
     const loggedInUser =
       JSON.parse(localStorage.getItem("loggedInUser"));
@@ -58,25 +54,46 @@ export default function Booking() {
 
       ...booking,
 
-      id: Date.now(),
-
       userEmail: loggedInUser.email,
 
       status: "Pending"
 
     };
 
+    try {
 
-    existingBookings.push(newBooking);
+      const response = await fetch(
+        "http://localhost:8080/api/bookings",
+        {
+          method: "POST",
 
-    localStorage.setItem(
-      "bookings",
-      JSON.stringify(existingBookings)
-    );
+          headers: {
+            "Content-Type": "application/json"
+          },
 
-    console.log("Booking Data:", newBooking);
+          body: JSON.stringify(newBooking)
+        }
+      );
 
-    alert("Booking submitted successfully!");
+      if (!response.ok) {
+        throw new Error("Failed to submit booking");
+      }
+
+      const savedBooking = await response.json();
+
+      console.log("Booking Data:", savedBooking);
+
+      alert("Booking submitted successfully!");
+
+      navigate("/mybooking");
+
+    } catch (error) {
+
+      console.error("Booking Error:", error);
+
+      alert("Booking failed. Please try again.");
+
+    }
 
   };
 

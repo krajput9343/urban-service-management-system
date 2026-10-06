@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/MyBooking.css";
 
@@ -9,21 +9,54 @@ export default function MyBooking() {
   const loggedInUser =
     JSON.parse(localStorage.getItem("loggedInUser"));
 
-  const [bookings, setBookings] = useState(() => {
+  const [bookings, setBookings] = useState([]);
 
-    const allBookings =
-      JSON.parse(localStorage.getItem("bookings")) || [];
+
+  // =========================
+  // BACKEND SE BOOKINGS FETCH
+  // =========================
+  useEffect(() => {
 
     if (!loggedInUser) {
-      return [];
+      return;
     }
 
-    return allBookings.filter(
-      (booking) => booking.userEmail === loggedInUser.email
-    );
-  });
+    fetch("http://localhost:8080/api/bookings")
+      .then((response) => {
 
-  // Login nahi hai
+        if (!response.ok) {
+          throw new Error("Failed to fetch bookings");
+        }
+
+        return response.json();
+
+      })
+      .then((data) => {
+
+        const userBookings = data.filter(
+          (booking) =>
+            booking.userEmail === loggedInUser.email &&
+            booking.status !== "Cancelled"
+        );
+
+        setBookings(userBookings);
+
+      })
+      .catch((error) => {
+
+        console.error(
+          "Error fetching bookings:",
+          error
+        );
+
+      });
+
+  }, [loggedInUser?.email]);
+
+
+  // =========================
+  // LOGIN NAHI HAI
+  // =========================
   if (!loggedInUser) {
 
     return (
@@ -58,7 +91,11 @@ export default function MyBooking() {
     );
   }
 
-  const handleCancel = (id) => {
+
+  // =========================
+  // CANCEL BOOKING
+  // =========================
+  const handleCancel = async (id) => {
 
     const confirmCancel = window.confirm(
       "Are you sure you want to cancel this booking?"
@@ -68,25 +105,57 @@ export default function MyBooking() {
       return;
     }
 
-    const allBookings =
-      JSON.parse(localStorage.getItem("bookings")) || [];
+    try {
 
-    const updatedBookings = allBookings.filter(
-      (booking) => booking.id !== id
-    );
+      const response = await fetch(
+        `http://localhost:8080/api/bookings/${id}`,
+        {
+          method: "PUT",
 
-    setBookings(
-      updatedBookings.filter(
-        (booking) => booking.userEmail === loggedInUser.email
-      )
-    );
+          headers: {
+            "Content-Type": "application/json"
+          },
 
-    localStorage.setItem(
-      "bookings",
-      JSON.stringify(updatedBookings)
-    );
+          body: JSON.stringify({
+            status: "Cancelled"
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          "Failed to cancel booking"
+        );
+      }
+
+      await response.json();
+
+      // Customer side se cancelled booking remove
+      setBookings((prevBookings) =>
+        prevBookings.filter(
+          (booking) => booking.id !== id
+        )
+      );
+
+      alert("Booking cancelled successfully!");
+
+    } catch (error) {
+
+      console.error(
+        "Cancel Booking Error:",
+        error
+      );
+
+      alert("Failed to cancel booking.");
+
+    }
+
   };
 
+
+  // =========================
+  // UI
+  // =========================
   return (
     <section className="mybooking-section">
 
@@ -105,6 +174,7 @@ export default function MyBooking() {
           </p>
 
         </div>
+
 
         <div className="mybooking-list">
 
@@ -137,32 +207,56 @@ export default function MyBooking() {
                   🛠️
                 </div>
 
+
                 <div className="mybooking-info">
 
-                  <h3>{booking.service}</h3>
+                  <h3>
+                    {booking.service}
+                  </h3>
 
-                  <p>👤 {booking.name}</p>
+                  <p>
+                    👤 {booking.name}
+                  </p>
 
-                  <p>📅 {booking.date}</p>
+                  <p>
+                    📅 {booking.date}
+                  </p>
 
-                  <p>⏰ {booking.time}</p>
+                  <p>
+                    ⏰ {booking.time}
+                  </p>
 
-                  <p>📍 {booking.address}</p>
+                  <p>
+                    📍 {booking.address}
+                  </p>
 
                 </div>
 
+
                 <div
-                  className={`mybooking-status ${booking.status.toLowerCase()}`}
+                  className={`mybooking-status ${
+                    booking.status?.toLowerCase()
+                  }`}
                 >
                   {booking.status}
                 </div>
 
-                <button
-                  className="cancel-booking-btn"
-                  onClick={() => handleCancel(booking.id)}
-                >
-                  Cancel Booking
-                </button>
+
+                {/* CANCEL BUTTON */}
+
+                {booking.status !== "Cancelled" &&
+                  booking.status !== "Completed" && (
+
+                    <button
+                      className="cancel-booking-btn"
+                      onClick={() =>
+                        handleCancel(booking.id)
+                      }
+                    >
+                      Cancel Booking
+                    </button>
+
+                  )}
 
               </div>
 
