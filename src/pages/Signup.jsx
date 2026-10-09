@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Signup.css";
@@ -15,6 +16,8 @@ export default function Signup() {
     address: ""
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setUser({
       ...user,
@@ -22,7 +25,8 @@ export default function Signup() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     if (user.password !== user.confirmPassword) {
@@ -30,37 +34,56 @@ export default function Signup() {
       return;
     }
 
-    const existingUsers =
-      JSON.parse(localStorage.getItem("users")) || [];
+    setLoading(true);
 
-    const userExists = existingUsers.some(
-      (item) => item.email === user.email
-    );
+    try {
 
-    if (userExists) {
-      alert("User already registered with this email!");
-      return;
+      const response = await fetch(
+        "http://localhost:8080/api/users/signup",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            name: user.name.trim(),
+            mobile: user.mobile.trim(),
+            email: user.email.trim().toLowerCase(),
+            password: user.password,
+            address: user.address.trim()
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Account creation failed!"
+        );
+      }
+
+      alert("Account created successfully!");
+
+      navigate("/login");
+
+    } catch (error) {
+
+      console.error("Signup Error:", error);
+
+      alert(
+        error.message === "Failed to fetch"
+          ? "Backend is not running. Please try again."
+          : error.message
+      );
+
+    } finally {
+
+      setLoading(false);
+
     }
-
-    const newUser = {
-      id: Date.now(),
-      name: user.name,
-      mobile: user.mobile,
-      email: user.email,
-      password: user.password,
-      address: user.address
-    };
-
-    existingUsers.push(newUser);
-
-    localStorage.setItem(
-      "users",
-      JSON.stringify(existingUsers)
-    );
-
-    alert("Account created successfully!");
-
-    navigate("/login");
   };
 
   return (
@@ -96,6 +119,7 @@ export default function Signup() {
                   value={user.name}
                   onChange={handleChange}
                   placeholder="Enter your full name"
+                  autoComplete="name"
                   required
                 />
               </div>
@@ -111,6 +135,7 @@ export default function Signup() {
                   onChange={handleChange}
                   placeholder="Enter mobile number"
                   pattern="[0-9]{10}"
+                  autoComplete="tel"
                   required
                 />
               </div>
@@ -125,6 +150,7 @@ export default function Signup() {
                   value={user.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
+                  autoComplete="email"
                   required
                 />
               </div>
@@ -140,6 +166,7 @@ export default function Signup() {
                   onChange={handleChange}
                   placeholder="Create password"
                   minLength="6"
+                  autoComplete="new-password"
                   required
                 />
               </div>
@@ -155,6 +182,7 @@ export default function Signup() {
                   onChange={handleChange}
                   placeholder="Confirm password"
                   minLength="6"
+                  autoComplete="new-password"
                   required
                 />
               </div>
@@ -169,6 +197,7 @@ export default function Signup() {
                   onChange={handleChange}
                   placeholder="Enter your complete address"
                   rows="3"
+                  autoComplete="street-address"
                   required
                 ></textarea>
               </div>
@@ -178,9 +207,10 @@ export default function Signup() {
             <button
               type="submit"
               className="signup-submit-btn"
+              disabled={loading}
             >
-              Create Account
-              <span>→</span>
+              {loading ? "Creating Account..." : "Create Account"}
+              {!loading && <span>→</span>}
             </button>
 
           </form>

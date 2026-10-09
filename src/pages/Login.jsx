@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Login.css";
@@ -11,6 +12,8 @@ export default function Login() {
     password: ""
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setLoginData({
       ...loginData,
@@ -18,31 +21,63 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
 
-    const existingUsers =
-      JSON.parse(localStorage.getItem("users")) || [];
+    setLoading(true);
 
-    const loggedUser = existingUsers.find(
-      (user) =>
-        user.email === loginData.email &&
-        user.password === loginData.password
-    );
+    try {
 
-    if (!loggedUser) {
-      alert("Invalid email or password!");
-      return;
+      const response = await fetch(
+        "http://localhost:8080/api/users/login",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            email: loginData.email.trim().toLowerCase(),
+            password: loginData.password
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Invalid email or password!"
+        );
+      }
+
+      // Login user ko localStorage me save karna
+      localStorage.setItem(
+        "loggedInUser",
+        JSON.stringify(data)
+      );
+
+      alert("Login successful!");
+
+      navigate("/");
+
+    } catch (error) {
+
+      console.error("Login Error:", error);
+
+      alert(
+        error.message === "Failed to fetch"
+          ? "Backend is not running. Please try again."
+          : error.message
+      );
+
+    } finally {
+
+      setLoading(false);
+
     }
-
-    localStorage.setItem(
-      "loggedInUser",
-      JSON.stringify(loggedUser)
-    );
-
-    alert("Login successful!");
-
-    navigate("/");
   };
 
   return (
@@ -78,6 +113,7 @@ export default function Login() {
                 value={loginData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
+                autoComplete="email"
                 required
               />
 
@@ -93,6 +129,7 @@ export default function Login() {
                 value={loginData.password}
                 onChange={handleChange}
                 placeholder="Enter your password"
+                autoComplete="current-password"
                 required
               />
 
@@ -101,9 +138,10 @@ export default function Login() {
             <button
               type="submit"
               className="login-submit-btn"
+              disabled={loading}
             >
-              Login
-              <span>→</span>
+              {loading ? "Logging in..." : "Login"}
+              {!loading && <span>→</span>}
             </button>
 
           </form>
