@@ -20,7 +20,7 @@ export default function Navbar() {
 
     localStorage.removeItem("loggedInUser");
 
-    alert("Logout successfully!");
+    alert("Logout successfuly!..");
 
     closeMenu();
 

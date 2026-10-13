@@ -674,7 +674,6 @@ export default function AdminServices() {
 
               </div>
 
-
               {/* SERVICE INFO */}
 
               <div className="admin-service-info">

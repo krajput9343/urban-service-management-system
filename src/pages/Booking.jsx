@@ -209,7 +209,6 @@ export default function Booking() {
 
               </div>
 
-
               <div className="booking-group">
 
                 <label>Booking Date</label>
