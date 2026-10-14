@@ -127,6 +127,7 @@ export default function CustomerReviews() {
 
               Verified Customer
 
+
             </div>
 
           </div>
@@ -138,3 +139,4 @@ export default function CustomerReviews() {
     </section>
   );
 }
+
