@@ -36,7 +36,7 @@ export default function Contact() {
               <div className="contact-icon">📞</div>
               <div>
                 <h4>Call Us</h4>
-                <p>+91 98765 43210</p>
+                <p>+91 90765 43290</p>
               </div>
             </div>
 

@@ -103,7 +103,7 @@ export default function Footer() {
           </p>
 
           <p>
-            ☎ +91 98765 43210
+            ☎ +91 66565 43810
           </p>
 
         </div>
