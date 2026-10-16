@@ -159,6 +159,8 @@
 
     cursor: pointer;
 
+    text-decoration: none;
+
     transition: 0.3s ease;
 
     box-shadow:
@@ -416,6 +418,7 @@
 
     .footer-book-btn {
         width: 100%;
+       
     }
 
 
@@ -434,6 +437,7 @@
         align-items: flex-start;
 
         padding-top: 20px;
+         
     }
 
 }

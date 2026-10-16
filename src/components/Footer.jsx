@@ -1,5 +1,6 @@
 import React from "react";
 import "../Styles/Footer.css";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -33,9 +34,11 @@ export default function Footer() {
             </p>
           </div>
 
-          <button className="footer-book-btn">
-            Book a Service →
-          </button>
+          <Link
+            to={`/booking?service`}
+            className="footer-book-btn">
+            Book a Service  →
+          </Link>
 
         </div>
 

@@ -1,6 +1,7 @@
 import React from "react";
 import "../Styles/Hero.css";
-import HeroImage from "../assets/images/hero1.png"; 
+import HeroImage from "../assets/images/hero1.png";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
   return (
@@ -9,13 +10,13 @@ export default function Hero() {
       {/* Left Side */}
       <div className="hero-left">
 
-     <div className="hero-badge">
-      👨‍🔧 Trusted by 5000+ Customers
-     </div>
+        <div className="hero-badge">
+          👨‍🔧 Trusted by 5000+ Customers
+        </div>
 
         <h1>
-         Find Trusted <br />
-         <span>Home Services</span>
+          Find Trusted <br />
+          <span>Home Services</span>
         </h1>
 
         <p>
@@ -59,11 +60,13 @@ export default function Hero() {
 
         {/* CTA Button */}
 
-       <div className="hero-buttons">
-        <button className="hero-btn">
-          Book a Service
-        </button>
-       </div>
+        <div className="hero-buttons">
+          <Link
+            to={`/booking?service`}
+            className="hero-btn">
+            Book a Service
+          </Link>
+        </div>
 
       </div>
 
