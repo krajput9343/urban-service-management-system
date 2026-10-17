@@ -112,4 +112,5 @@ export default function AdminLogin() {
 
     </section>
   );
+
 }
