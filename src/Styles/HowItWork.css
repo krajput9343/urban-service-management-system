@@ -10,26 +10,6 @@
     overflow: hidden;
 }
 
-/* =========================================
-   BACKGROUND DECORATION
-========================================= */
-
-/* .how-it-works::before {
-    content: "";
-    position: absolute;
-
-    width: 420px;
-    height: 420px;
-
-    background: rgba(51, 75, 126, 0.06);
-
-    border-radius: 50%;
-
-    top: -220px;
-    left: -180px;
-
-    pointer-events: none;
-} */
 
 .how-it-works::after {
     content: "";
