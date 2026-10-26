@@ -21,16 +21,12 @@ export default function MyBooking() {
       return;
     }
 
-    fetch("http://localhost:8080/api/bookings")
-      .then((response) => {
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch bookings");
-        }
-
-        return response.json();
-
-      })
+    fetch("http://localhost:8080/api/bookings", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`
+      }
+    })
       .then((data) => {
 
         const userBookings = data.filter(
@@ -97,13 +93,14 @@ export default function MyBooking() {
   // =========================
   const handleCancel = async (id) => {
 
-    const confirmCancel = window.confirm(
-      "Are you sure you want to cancel this booking?"
-    );
-
-    if (!confirmCancel) {
-      return;
-    }
+    const response = await fetch(`http://localhost:8080/api/bookings/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`
+      },
+      body: JSON.stringify({ status: "Cancelled" })
+    });
 
     try {
 
@@ -234,9 +231,8 @@ export default function MyBooking() {
 
 
                 <div
-                  className={`mybooking-status ${
-                    booking.status?.toLowerCase()
-                  }`}
+                  className={`mybooking-status ${booking.status?.toLowerCase()
+                    }`}
                 >
                   {booking.status}
                 </div>
