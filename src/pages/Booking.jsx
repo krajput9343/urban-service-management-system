@@ -1,27 +1,22 @@
+
 import React, { useEffect, useState } from "react";
 import "../styles/Booking.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function Booking() {
-
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
 
-  const loggedInUser =
-    localStorage.getItem("loggedInUser");
+  const loggedInUser = localStorage.getItem("loggedInUser");
 
-  const selectedService =
-    searchParams.get("service") || "";
+  const selectedService = searchParams.get("service") || "";
 
   useEffect(() => {
-
     if (!loggedInUser) {
       navigate("/login");
     }
-
   }, [loggedInUser, navigate]);
-
 
   const [booking, setBooking] = useState({
     service: selectedService,
@@ -33,44 +28,29 @@ export default function Booking() {
     message: ""
   });
 
-
   const handleChange = (e) => {
-
     setBooking({
       ...booking,
       [e.target.name]: e.target.value
     });
-
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
-    const loggedInUser =
-      JSON.parse(localStorage.getItem("loggedInUser"));
-
     const newBooking = {
-
-      ...booking,
-
-      userEmail: loggedInUser.email,
-
-      status: "Pending"
-
+      ...booking
     };
 
     try {
-
       const response = await fetch(
         "http://localhost:8080/api/bookings",
         {
           method: "POST",
-
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`
           },
-
           body: JSON.stringify(newBooking)
         }
       );
@@ -86,32 +66,22 @@ export default function Booking() {
       alert("Booking submitted successfully!");
 
       navigate("/mybooking");
-
     } catch (error) {
-
       console.error("Booking Error:", error);
 
       alert("Booking failed. Please try again.");
-
     }
-
   };
-
 
   // Login nahi hai to Booking page show nahi hoga
   if (!loggedInUser) {
     return null;
   }
 
-
   return (
-
     <section className="booking-section">
-
       <div className="booking-container">
-
         <div className="booking-heading">
-
           <span>BOOK A SERVICE</span>
 
           <h2>
@@ -123,19 +93,12 @@ export default function Booking() {
             Choose your service and provide your details.
             Our trusted professional will take care of the rest.
           </p>
-
         </div>
 
-
         <div className="booking-card">
-
           <form onSubmit={handleSubmit}>
-
             <div className="booking-grid">
-
-
               <div className="booking-group">
-
                 <label>Service</label>
 
                 <select
@@ -144,42 +107,18 @@ export default function Booking() {
                   onChange={handleChange}
                   required
                 >
+                  <option value="">Select Service</option>
 
-                  <option value="">
-                    Select Service
-                  </option>
-
-                  <option value="Home Cleaning">
-                    Home Cleaning
-                  </option>
-
-                  <option value="Plumbing">
-                    Plumbing
-                  </option>
-
-                  <option value="Electrician">
-                    Electrician
-                  </option>
-
-                  <option value="AC Repair">
-                    AC Repair
-                  </option>
-
-                  <option value="Carpenter">
-                    Carpenter
-                  </option>
-
-                  <option value="Appliance Repair">
-                    Appliance Repair
-                  </option>
-
+                  <option value="Home Cleaning">Home Cleaning</option>
+                  <option value="Plumbing">Plumbing</option>
+                  <option value="Electrician">Electrician</option>
+                  <option value="AC Repair">AC Repair</option>
+                  <option value="Carpenter">Carpenter</option>
+                  <option value="Appliance Repair">Appliance Repair</option>
                 </select>
-
               </div>
 
-
               <div className="booking-group">
-
                 <label>Your Name</label>
 
                 <input
@@ -190,12 +129,9 @@ export default function Booking() {
                   placeholder="Enter your name"
                   required
                 />
-
               </div>
 
-
               <div className="booking-group">
-
                 <label>Mobile Number</label>
 
                 <input
@@ -206,11 +142,9 @@ export default function Booking() {
                   placeholder="Enter mobile number"
                   required
                 />
-
               </div>
 
               <div className="booking-group">
-
                 <label>Booking Date</label>
 
                 <input
@@ -220,12 +154,9 @@ export default function Booking() {
                   onChange={handleChange}
                   required
                 />
-
               </div>
 
-
               <div className="booking-group">
-
                 <label>Preferred Time</label>
 
                 <input
@@ -235,12 +166,9 @@ export default function Booking() {
                   onChange={handleChange}
                   required
                 />
-
               </div>
 
-
               <div className="booking-group full-width">
-
                 <label>Address</label>
 
                 <input
@@ -251,12 +179,9 @@ export default function Booking() {
                   placeholder="Enter your complete address"
                   required
                 />
-
               </div>
 
-
               <div className="booking-group full-width">
-
                 <label>Problem / Description</label>
 
                 <textarea
@@ -266,31 +191,16 @@ export default function Booking() {
                   placeholder="Tell us about your service requirement..."
                   rows="4"
                 ></textarea>
-
               </div>
-
             </div>
 
-
-            <button
-              type="submit"
-              className="booking-btn"
-            >
-
+            <button type="submit" className="booking-btn">
               Confirm Booking
-
               <span>→</span>
-
             </button>
-
           </form>
-
         </div>
-
       </div>
-
     </section>
-
   );
-
 }
