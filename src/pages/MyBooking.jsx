@@ -15,11 +15,9 @@ export default function MyBooking() {
   // =========================
   // BACKEND SE BOOKINGS FETCH
   // =========================
-  useEffect(() => {
 
-    if (!loggedInUser) {
-      return;
-    }
+  useEffect(() => {
+    if (!loggedInUser) return;
 
     fetch("http://localhost:8080/api/bookings", {
       method: "GET",
@@ -27,27 +25,32 @@ export default function MyBooking() {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`
       }
     })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch bookings");
+        }
+        return response.json();
+      })
       .then((data) => {
+        console.log("Bookings API Response:", data);
+
+        if (!Array.isArray(data)) {
+          console.error("Expected an array, received:", data);
+          setBookings([]);
+          return;
+        }
 
         const userBookings = data.filter(
-          (booking) =>
-            booking.userEmail === loggedInUser.email &&
-            booking.status !== "Cancelled"
+          (booking) => booking.status !== "Cancelled"
         );
 
         setBookings(userBookings);
-
       })
       .catch((error) => {
-
-        console.error(
-          "Error fetching bookings:",
-          error
-        );
-
+        console.error("Error fetching bookings:", error);
       });
-
   }, [loggedInUser?.email]);
+
 
 
   // =========================
