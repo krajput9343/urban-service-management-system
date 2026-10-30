@@ -94,28 +94,23 @@ export default function MyBooking() {
   // =========================
   // CANCEL BOOKING
   // =========================
-  const handleCancel = async (id) => {
 
-    const response = await fetch(`http://localhost:8080/api/bookings/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`
-      },
-      body: JSON.stringify({ status: "Cancelled" })
-    });
+  const handleCancel = async (id) => {
+    const confirmCancel = window.confirm(
+      "Are you sure you want to cancel this booking?"
+    );
+
+    if (!confirmCancel) return;
 
     try {
-
       const response = await fetch(
         `http://localhost:8080/api/bookings/${id}`,
         {
           method: "PUT",
-
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`
           },
-
           body: JSON.stringify({
             status: "Cancelled"
           })
@@ -123,35 +118,22 @@ export default function MyBooking() {
       );
 
       if (!response.ok) {
-        throw new Error(
-          "Failed to cancel booking"
-        );
+        throw new Error("Failed to cancel booking");
       }
 
       await response.json();
 
-      // Customer side se cancelled booking remove
+      // Booking ko turant screen se remove karo
       setBookings((prevBookings) =>
-        prevBookings.filter(
-          (booking) => booking.id !== id
-        )
+        prevBookings.filter((booking) => booking.id !== id)
       );
 
       alert("Booking cancelled successfully!");
-
     } catch (error) {
-
-      console.error(
-        "Cancel Booking Error:",
-        error
-      );
-
+      console.error("Cancel Booking Error:", error);
       alert("Failed to cancel booking.");
-
     }
-
   };
-
 
   // =========================
   // UI
