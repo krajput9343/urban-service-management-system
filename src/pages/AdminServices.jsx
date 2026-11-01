@@ -498,11 +498,7 @@ export default function AdminServices() {
                 <p>⭐ {service.rating}</p>
               </div>
 
-              {/* PRICE */}
-              <div className="admin-service-price">
-                <h3>₹{service.price}</h3>
-                <span>Starting Price</span>
-              </div>
+             
 
               {/* ACTIONS */}
               <div className="admin-service-actions">
