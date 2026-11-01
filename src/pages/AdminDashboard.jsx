@@ -24,16 +24,12 @@ const AdminDashboard = () => {
       return;
     }
 
-    fetch("http://localhost:8080/api/bookings")
-      .then((response) => {
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch bookings");
-        }
-
-        return response.json();
-
-      })
+    fetch("http://localhost:8080/api/bookings", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`
+      }
+    })
       .then((data) => {
 
         setBookings(data);
@@ -54,19 +50,17 @@ const AdminDashboard = () => {
   // =========================
   // UPDATE BOOKING STATUS
   // =========================
+
   const updateStatus = async (id, newStatus) => {
-
     try {
-
       const response = await fetch(
         `http://localhost:8080/api/bookings/${id}`,
         {
           method: "PUT",
-
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`
           },
-
           body: JSON.stringify({
             status: newStatus
           })
@@ -74,57 +68,38 @@ const AdminDashboard = () => {
       );
 
       if (!response.ok) {
-        throw new Error(
-          "Failed to update booking status"
-        );
+        throw new Error("Failed to update booking status");
       }
 
-      const updatedBooking =
-        await response.json();
+      const updatedBooking = await response.json();
 
       setBookings((prevBookings) =>
         prevBookings.map((booking) =>
-          booking.id === id
-            ? updatedBooking
-            : booking
+          booking.id === id ? updatedBooking : booking
         )
       );
 
-      alert(
-        `Booking ${newStatus} successfully!`
-      );
-
+      alert(`Booking ${newStatus} successfully!`);
     } catch (error) {
-
-      console.error(
-        "Update Status Error:",
-        error
-      );
-
-      alert(
-        "Failed to update booking status."
-      );
-
+      console.error("Update Status Error:", error);
+      alert("Failed to update booking status.");
     }
-
   };
+
 
 
   // =========================
   // LOGOUT
   // =========================
   const handleLogout = () => {
-
-    localStorage.removeItem(
-      "adminLoggedIn"
-    );
+    localStorage.removeItem("adminLoggedIn");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("loggedInUser");
 
     alert("Admin Logout Successful!");
 
     navigate("/admin-login");
-
   };
-
 
   // =========================
   // STATS
@@ -468,14 +443,13 @@ const AdminDashboard = () => {
 
 
                     <span
-                      className={`booking-status ${
-                        booking.status
-                          ?.toLowerCase()
-                          .replace(
-                            /\s+/g,
-                            "-"
-                          )
-                      }`}
+                      className={`booking-status ${booking.status
+                        ?.toLowerCase()
+                        .replace(
+                          /\s+/g,
+                          "-"
+                        )
+                        }`}
                     >
                       {booking.status}
                     </span>

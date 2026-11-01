@@ -1,8 +1,8 @@
+
 import React, { useEffect, useState } from "react";
 import "../styles/AdminServices.css";
 
 export default function AdminServices() {
-
   const defaultServices = [
     {
       id: 1,
@@ -38,40 +38,9 @@ export default function AdminServices() {
     }
   ];
 
-  // =========================
-  // SERVICES
-  // =========================
-
   const [services, setServices] = useState(defaultServices);
-
-  // =========================
-  // GET SERVICES FROM BACKEND
-  // =========================
-
-  useEffect(() => {
-    fetch("http://localhost:8080/api/services")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch services");
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        setServices(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching services:", error);
-      });
-  }, []);
-
   const [showForm, setShowForm] = useState(false);
-
   const [editId, setEditId] = useState(null);
-
-  // =========================
-  // FORM DATA
-  // =========================
 
   const [formData, setFormData] = useState({
     title: "",
@@ -82,10 +51,24 @@ export default function AdminServices() {
     image: ""
   });
 
-  // =========================
-  // HANDLE INPUT
-  // =========================
+  // GET SERVICES FROM BACKEND
+  useEffect(() => {
+    fetch("http://localhost:8080/api/services")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch services");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setServices(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching services:", error);
+      });
+  }, []);
 
+  // HANDLE INPUT
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -93,25 +76,19 @@ export default function AdminServices() {
     });
   };
 
-  // =========================
   // HANDLE IMAGE
-  // =========================
-
   const handleImageChange = (e) => {
-
     const file = e.target.files[0];
 
     if (!file) {
       return;
     }
 
-    // Only image files
     if (!file.type.startsWith("image/")) {
       alert("Please select a valid image file!");
       return;
     }
 
-    // File size check - 2 MB
     if (file.size > 2 * 1024 * 1024) {
       alert("Image size should be less than 2 MB!");
       return;
@@ -120,23 +97,17 @@ export default function AdminServices() {
     const reader = new FileReader();
 
     reader.onloadend = () => {
-
       setFormData((prev) => ({
         ...prev,
         image: reader.result
       }));
-
     };
 
     reader.readAsDataURL(file);
   };
 
-  // =========================
   // ADD / EDIT SERVICE
-  // =========================
-
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     if (
@@ -150,20 +121,21 @@ export default function AdminServices() {
       return;
     }
 
-    // Image required only while adding
     if (editId === null && !formData.image) {
       alert("Please select a service image!");
       return;
     }
 
     try {
+      const token = localStorage.getItem("authToken");
 
-      // =========================
+      if (!token) {
+        alert("Please login first!");
+        return;
+      }
+
       // EDIT SERVICE
-      // =========================
-
       if (editId !== null) {
-
         const existingService = services.find(
           (service) => service.id === editId
         );
@@ -174,12 +146,7 @@ export default function AdminServices() {
           price: Number(formData.price),
           duration: formData.duration,
           rating: Number(formData.rating),
-
-          // Keep old image if new image is not selected
-          image:
-            formData.image ||
-            existingService?.image ||
-            ""
+          image: formData.image || existingService?.image || ""
         };
 
         const response = await fetch(
@@ -187,7 +154,8 @@ export default function AdminServices() {
           {
             method: "PUT",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
             },
             body: JSON.stringify(serviceData)
           }
@@ -201,21 +169,13 @@ export default function AdminServices() {
 
         setServices((prevServices) =>
           prevServices.map((service) =>
-            service.id === editId
-              ? updatedService
-              : service
+            service.id === editId ? updatedService : service
           )
         );
 
         alert("Service updated successfully!");
-      }
-
-      // =========================
-      // ADD SERVICE
-      // =========================
-
-      else {
-
+      } else {
+        // ADD SERVICE
         const newServiceData = {
           title: formData.title,
           category: formData.category,
@@ -230,7 +190,8 @@ export default function AdminServices() {
           {
             method: "POST",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
             },
             body: JSON.stringify(newServiceData)
           }
@@ -250,10 +211,7 @@ export default function AdminServices() {
         alert("Service added successfully!");
       }
 
-      // =========================
       // RESET FORM
-      // =========================
-
       setFormData({
         title: "",
         category: "",
@@ -264,41 +222,25 @@ export default function AdminServices() {
       });
 
       setEditId(null);
-
       setShowForm(false);
-
     } catch (error) {
-
       console.error("Error:", error);
-
       alert("Something went wrong!");
-
     }
   };
 
-  // =========================
   // EDIT SERVICE
-  // =========================
-
   const handleEdit = (service) => {
-
     setFormData({
-
       title: service.title,
-
       category: service.category,
-
       price: service.price,
-
       duration: service.duration,
-
       rating: service.rating,
-
       image: service.image || ""
     });
 
     setEditId(service.id);
-
     setShowForm(true);
 
     window.scrollTo({
@@ -307,12 +249,8 @@ export default function AdminServices() {
     });
   };
 
-  // =========================
   // DELETE SERVICE
-  // =========================
-
   const handleDelete = async (id) => {
-
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this service?"
     );
@@ -322,11 +260,20 @@ export default function AdminServices() {
     }
 
     try {
+      const token = localStorage.getItem("authToken");
+
+      if (!token) {
+        alert("Please login first!");
+        return;
+      }
 
       const response = await fetch(
         `http://localhost:8080/api/services/${id}`,
         {
-          method: "DELETE"
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
       );
 
@@ -335,28 +282,18 @@ export default function AdminServices() {
       }
 
       setServices((prevServices) =>
-        prevServices.filter(
-          (service) => service.id !== id
-        )
+        prevServices.filter((service) => service.id !== id)
       );
 
       alert("Service deleted successfully!");
-
     } catch (error) {
-
       console.error("Error deleting service:", error);
-
       alert("Something went wrong!");
-
     }
   };
 
-  // =========================
   // CANCEL FORM
-  // =========================
-
   const handleCancel = () => {
-
     setFormData({
       title: "",
       category: "",
@@ -367,27 +304,16 @@ export default function AdminServices() {
     });
 
     setEditId(null);
-
     setShowForm(false);
   };
 
   return (
-
     <section className="admin-services">
-
       <div className="admin-services-container">
-
-        {/* =========================
-            HEADER
-        ========================= */}
-
+        {/* HEADER */}
         <div className="admin-services-header">
-
           <div>
-
-            <span>
-              ADMIN PANEL
-            </span>
+            <span>ADMIN PANEL</span>
 
             <h1>
               Manage <strong>Services</strong>
@@ -396,60 +322,34 @@ export default function AdminServices() {
             <p>
               Add, edit and manage your home services.
             </p>
-
           </div>
 
           <button
             className="add-service-btn"
             onClick={() => {
-
               if (showForm) {
-
                 handleCancel();
-
               } else {
-
                 setShowForm(true);
-
               }
-
             }}
           >
-
-            {showForm
-              ? "✕ Close Form"
-              : "+ Add Service"}
-
+            {showForm ? "✕ Close Form" : "+ Add Service"}
           </button>
-
         </div>
 
-
-        {/* =========================
-            ADD / EDIT FORM
-        ========================= */}
-
+        {/* ADD / EDIT FORM */}
         {showForm && (
-
           <div className="admin-service-form">
-
             <h2>
-              {editId !== null
-                ? "Edit Service"
-                : "Add New Service"}
+              {editId !== null ? "Edit Service" : "Add New Service"}
             </h2>
 
             <form onSubmit={handleSubmit}>
-
               <div className="service-form-grid">
-
-                {/* Service Name */}
-
+                {/* SERVICE NAME */}
                 <div className="service-form-group">
-
-                  <label>
-                    Service Name
-                  </label>
+                  <label>Service Name</label>
 
                   <input
                     type="text"
@@ -458,60 +358,29 @@ export default function AdminServices() {
                     value={formData.title}
                     onChange={handleChange}
                   />
-
                 </div>
 
-
-                {/* Category */}
-
+                {/* CATEGORY */}
                 <div className="service-form-group">
-
-                  <label>
-                    Category
-                  </label>
+                  <label>Category</label>
 
                   <select
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
                   >
-
-                    <option value="">
-                      Select Category
-                    </option>
-
-                    <option value="Cleaning">
-                      Cleaning
-                    </option>
-
-                    <option value="Plumbing">
-                      Plumbing
-                    </option>
-
-                    <option value="Electrical">
-                      Electrical
-                    </option>
-
-                    <option value="Repair">
-                      Repair
-                    </option>
-
-                    <option value="Painting">
-                      Painting
-                    </option>
-
+                    <option value="">Select Category</option>
+                    <option value="Cleaning">Cleaning</option>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Repair">Repair</option>
+                    <option value="Painting">Painting</option>
                   </select>
-
                 </div>
 
-
-                {/* Price */}
-
+                {/* PRICE */}
                 <div className="service-form-group">
-
-                  <label>
-                    Price
-                  </label>
+                  <label>Price</label>
 
                   <input
                     type="number"
@@ -520,17 +389,11 @@ export default function AdminServices() {
                     value={formData.price}
                     onChange={handleChange}
                   />
-
                 </div>
 
-
-                {/* Duration */}
-
+                {/* DURATION */}
                 <div className="service-form-group">
-
-                  <label>
-                    Duration
-                  </label>
+                  <label>Duration</label>
 
                   <input
                     type="text"
@@ -539,17 +402,11 @@ export default function AdminServices() {
                     value={formData.duration}
                     onChange={handleChange}
                   />
-
                 </div>
 
-
-                {/* Rating */}
-
+                {/* RATING */}
                 <div className="service-form-group">
-
-                  <label>
-                    Rating
-                  </label>
+                  <label>Rating</label>
 
                   <input
                     type="number"
@@ -561,17 +418,11 @@ export default function AdminServices() {
                     value={formData.rating}
                     onChange={handleChange}
                   />
-
                 </div>
 
-
                 {/* IMAGE UPLOAD */}
-
                 <div className="service-form-group">
-
-                  <label>
-                    Service Image
-                  </label>
+                  <label>Service Image</label>
 
                   <input
                     type="file"
@@ -582,36 +433,23 @@ export default function AdminServices() {
                   <small className="image-help-text">
                     JPG, PNG, WEBP — Max 2 MB
                   </small>
-
                 </div>
-
               </div>
 
-
               {/* IMAGE PREVIEW */}
-
               {formData.image && (
-
                 <div className="service-image-preview">
-
-                  <span>
-                    Image Preview
-                  </span>
+                  <span>Image Preview</span>
 
                   <img
                     src={formData.image}
                     alt="Service Preview"
                   />
-
                 </div>
-
               )}
 
-
               {/* FORM BUTTONS */}
-
               <div className="service-form-actions">
-
                 <button
                   type="button"
                   className="service-form-cancel"
@@ -624,98 +462,50 @@ export default function AdminServices() {
                   type="submit"
                   className="service-form-save"
                 >
-
-                  {editId !== null
-                    ? "Save Changes"
-                    : "Save Service"}
-
+                  {editId !== null ? "Save Changes" : "Save Service"}
                 </button>
-
               </div>
-
             </form>
-
           </div>
-
         )}
 
-
-        {/* =========================
-            SERVICE LIST
-        ========================= */}
-
+        {/* SERVICE LIST */}
         <div className="admin-services-list">
-
           {services.map((service) => (
-
             <div
               className="admin-service-card"
               key={service.id}
             >
-
               {/* SERVICE IMAGE */}
-
               <div className="admin-service-image">
-
                 {service.image ? (
-
                   <img
                     src={service.image}
                     alt={service.title}
                   />
-
                 ) : (
-
                   <div className="admin-service-icon">
                     🛠️
                   </div>
-
                 )}
-
               </div>
 
               {/* SERVICE INFO */}
-
               <div className="admin-service-info">
-
-                <h3>
-                  {service.title}
-                </h3>
-
-                <p>
-                  Category: {service.category}
-                </p>
-
-                <p>
-                  Duration: {service.duration}
-                </p>
-
-                <p>
-                  ⭐ {service.rating}
-                </p>
-
+                <h3>{service.title}</h3>
+                <p>Category: {service.category}</p>
+                <p>Duration: {service.duration}</p>
+                <p>⭐ {service.rating}</p>
               </div>
-
 
               {/* PRICE */}
-
               <div className="admin-service-price">
-
-                <h3>
-                  ₹{service.price}
-                </h3>
-
-                <span>
-                  Starting Price
-                </span>
-
+                <h3>₹{service.price}</h3>
+                <span>Starting Price</span>
               </div>
 
-
               {/* ACTIONS */}
-
               <div className="admin-service-actions">
-
                 <button
                   className="edit-service-btn"
                   onClick={() => handleEdit(service)}
@@ -729,18 +519,11 @@ export default function AdminServices() {
                 >
                   Delete
                 </button>
-
               </div>
-
             </div>
-
           ))}
-
         </div>
-
       </div>
-
     </section>
-
   );
 }
