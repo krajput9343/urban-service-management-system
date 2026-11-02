@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/AdminLogin.css";
 
-
 export default function AdminLogin() {
-
   const navigate = useNavigate();
 
   const [loginData, setLoginData] = useState({
     email: "",
     password: ""
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setLoginData({
@@ -19,40 +19,61 @@ export default function AdminLogin() {
     });
   };
 
-  const handleSubmit = (e) => {
-
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      loginData.email === "admin@urbanservice.com" &&
-      loginData.password === "admin123"
-    ) {
+    if (loading) return;
 
-      localStorage.setItem(
-        "adminLoggedIn",
-        "true"
-      );
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:8080/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: loginData.email.trim(),
+          password: loginData.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Invalid email or password!");
+        return;
+      }
+
+      if (!data.token) {
+        alert("Login failed: backend did not return an authentication token.");
+        return;
+      }
+
+      if (String(data.role || "").toUpperCase() !== "ADMIN") {
+        alert("Access denied! Only an admin account can access the Admin Panel.");
+        return;
+      }
+
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("loggedInUser", JSON.stringify(data));
+      localStorage.setItem("adminLoggedIn", "true");
 
       alert("Admin Login Successful!");
-
       navigate("/admin");
-
-    } else {
-
-      alert("Invalid Admin Email or Password!");
-
+    } catch (error) {
+      console.error("Admin login error:", error);
+      alert("Backend se connect nahi ho pa raha. Check karo ki Spring Boot running hai.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <section className="admin-login-section">
-
       <div className="admin-login-container">
-
         <div className="admin-login-card">
-
           <div className="admin-login-heading">
-
             <span>ADMIN PANEL</span>
 
             <h1>
@@ -62,13 +83,10 @@ export default function AdminLogin() {
             <p>
               Login to manage Urban Service bookings.
             </p>
-
           </div>
 
           <form onSubmit={handleSubmit}>
-
             <div className="admin-login-group">
-
               <label>Email Address</label>
 
               <input
@@ -78,12 +96,11 @@ export default function AdminLogin() {
                 onChange={handleChange}
                 placeholder="Enter admin email"
                 required
+                autoComplete="username"
               />
-
             </div>
 
             <div className="admin-login-group">
-
               <label>Password</label>
 
               <input
@@ -93,25 +110,21 @@ export default function AdminLogin() {
                 onChange={handleChange}
                 placeholder="Enter admin password"
                 required
+                autoComplete="current-password"
               />
-
             </div>
 
             <button
               type="submit"
               className="admin-login-btn"
+              disabled={loading}
             >
-              Admin Login
-              <span>→</span>
+              {loading ? "Logging in..." : "Admin Login"}
+              {!loading && <span>→</span>}
             </button>
-
           </form>
-
         </div>
-
       </div>
-
     </section>
   );
-
 }
